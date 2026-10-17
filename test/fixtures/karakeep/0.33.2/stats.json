@@ -1,0 +1,185 @@
+{
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "numBookmarks": 2,
+    "numFavorites": 1,
+    "numArchived": 0,
+    "numTags": 2,
+    "numLists": 2,
+    "numHighlights": 0,
+    "bookmarksByType": {
+      "link": 1,
+      "text": 1,
+      "asset": 0
+    },
+    "topDomains": [
+      {
+        "domain": "gladysassistant.com",
+        "count": 1
+      }
+    ],
+    "totalAssetSize": 172649,
+    "assetsByType": [
+      {
+        "type": "linkBannerImage",
+        "count": 1,
+        "totalSize": 162015
+      },
+      {
+        "type": "linkHtmlContent",
+        "count": 1,
+        "totalSize": 10634
+      }
+    ],
+    "bookmarkingActivity": {
+      "thisWeek": 2,
+      "thisMonth": 2,
+      "thisYear": 2,
+      "byHour": [
+        {
+          "hour": 0,
+          "count": 0
+        },
+        {
+          "hour": 1,
+          "count": 0
+        },
+        {
+          "hour": 2,
+          "count": 0
+        },
+        {
+          "hour": 3,
+          "count": 0
+        },
+        {
+          "hour": 4,
+          "count": 0
+        },
+        {
+          "hour": 5,
+          "count": 0
+        },
+        {
+          "hour": 6,
+          "count": 0
+        },
+        {
+          "hour": 7,
+          "count": 0
+        },
+        {
+          "hour": 8,
+          "count": 0
+        },
+        {
+          "hour": 9,
+          "count": 0
+        },
+        {
+          "hour": 10,
+          "count": 0
+        },
+        {
+          "hour": 11,
+          "count": 0
+        },
+        {
+          "hour": 12,
+          "count": 0
+        },
+        {
+          "hour": 13,
+          "count": 0
+        },
+        {
+          "hour": 14,
+          "count": 0
+        },
+        {
+          "hour": 15,
+          "count": 0
+        },
+        {
+          "hour": 16,
+          "count": 0
+        },
+        {
+          "hour": 17,
+          "count": 0
+        },
+        {
+          "hour": 18,
+          "count": 2
+        },
+        {
+          "hour": 19,
+          "count": 0
+        },
+        {
+          "hour": 20,
+          "count": 0
+        },
+        {
+          "hour": 21,
+          "count": 0
+        },
+        {
+          "hour": 22,
+          "count": 0
+        },
+        {
+          "hour": 23,
+          "count": 0
+        }
+      ],
+      "byDayOfWeek": [
+        {
+          "day": 0,
+          "count": 0
+        },
+        {
+          "day": 1,
+          "count": 0
+        },
+        {
+          "day": 2,
+          "count": 0
+        },
+        {
+          "day": 3,
+          "count": 0
+        },
+        {
+          "day": 4,
+          "count": 0
+        },
+        {
+          "day": 5,
+          "count": 0
+        },
+        {
+          "day": 6,
+          "count": 2
+        }
+      ]
+    },
+    "tagUsage": [
+      {
+        "name": "courses",
+        "count": 1
+      },
+      {
+        "name": "maison",
+        "count": 1
+      }
+    ],
+    "bookmarksBySource": [
+      {
+        "source": "api",
+        "count": 2
+      }
+    ]
+  }
+}

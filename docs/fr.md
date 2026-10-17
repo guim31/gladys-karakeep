@@ -1,67 +1,137 @@
-# Template de démonstration
+# Karakeep
 
-Ceci est la documentation utilisateur de l'intégration. Gladys ré-héberge ce
-fichier et affiche un lien **Documentation** permanent vers lui dans l'écran
-de configuration (dans la langue de l'utilisateur, avec l'anglais en repli) —
-c'est au moment de configurer que l'utilisateur en a le plus besoin. Gardez
-les courtes indications d'accueil dans les blocs `section` du `config_schema`
-du manifest ; mettez ici le pas-à-pas détaillé (captures d'écran, dépannage…).
+Reliez Gladys à [Karakeep](https://karakeep.app) (anciennement Hoarder),
+l'application auto-hébergée de marque-pages, de notes et d'images : suivez vos
+compteurs, réagissez quand un marque-page est ajouté ou mis en favori, et
+enregistrez des liens ou des notes depuis vos scènes ou le tableau de bord.
+Tout reste sur votre réseau local : Gladys parle directement à votre serveur
+Karakeep.
 
-## Ce que vous obtenez
+Testée avec un vrai serveur Karakeep 0.33.2 (l'image Docker officielle). Vos
+retours sont les bienvenus sur le forum de Gladys.
 
-Six appareils de démonstration apparaissent après l'installation : une
-station météo (vraies données Open-Meteo), un interrupteur, une lampe
-variable, une prise connectée avec mesure de puissance, un détecteur de
-mouvement et une caméra.
+## Prérequis
+
+- Gladys Assistant 5.2 ou plus récent.
+- Un serveur Karakeep joignable depuis la machine de Gladys, sur le port 3000
+  par défaut, ou derrière un reverse proxy.
+- Une clé d'API : dans Karakeep, ouvrez **Paramètres → Clés API** et créez-en
+  une. L'intégration voit les marque-pages de l'utilisateur à qui appartient la
+  clé.
 
 ## Configuration
 
 1. Ouvrez l'onglet **Configuration** de l'intégration.
-2. Renseignez la **latitude** et la **longitude** que la station météo de
-   démonstration doit observer (Paris par défaut), et choisissez votre unité
-   de température. L'**intervalle de rafraîchissement** règle la fréquence
-   de lecture de la station météo et de la puissance de la prise : toutes
-   les 5 minutes par défaut, toutes les minutes au plus.
-3. Enregistrez : les appareils apparaissent dans l'onglet **Découverte**,
-   prêts à être ajoutés.
+2. Dans **Adresse de Karakeep**, saisissez l'adresse IP du serveur, par exemple
+   `192.168.1.50` : l'intégration utilise alors le port 3000. Ajoutez le port
+   s'il est différent (`192.168.1.50:3100`). Derrière un reverse proxy,
+   saisissez l'adresse complète (`https://keep.example.org`).
+3. Collez la **Clé d'API**.
+4. **Lire Karakeep toutes les** : 1, 5 (par défaut), 15, 30 ou 60 minutes. Les
+   nouveaux marque-pages et favoris sont annoncés à la lecture suivante.
+5. **Langue des noms et messages** fixe les noms des fonctionnalités (figés à
+   l'ajout de l'appareil) et les textes de l'intégration. Français par défaut.
+6. Enregistrez, puis utilisez **Tester la connexion** : elle affiche
+   l'utilisateur Karakeep et le nombre de marque-pages et de listes.
+7. Dans l'onglet **Découverte**, ajoutez l'appareil **Karakeep**.
 
-Le réglage **Préférer la connexion locale** pilote la prise de
-démonstration : elle affiche en badge le canal réellement utilisé (local ou
-cloud), avec un point orange quand elle fonctionne en mode dégradé (local
-refusé, bascule cloud).
+## Appareil
 
-## Actions
+**Karakeep** (un appareil pour l'utilisateur de la clé d'API) :
 
-- **Tester le fournisseur météo** — effectue une requête en direct vers
-  Open-Meteo et affiche la température et l'humidité actuelles sous le
-  bouton.
-- **Identifier un appareil** — choisissez un de vos appareils dans la liste
-  et il se signale (la lampe de démonstration « clignote » dans les logs).
+| Fonctionnalité      | Valeur                                                |
+| ------------------- | ----------------------------------------------------- |
+| Marque-pages        | nombre de marque-pages (liens, notes et fichiers)     |
+| Non archivés        | marque-pages pas encore archivés : votre liste à lire |
+| Favoris             | marque-pages mis en favori                            |
+| Archivés            | marque-pages archivés                                 |
+| Listes              | nombre de listes                                      |
+| Tags                | nombre de tags                                        |
+| Surlignages         | nombre de surlignages                                 |
+| Dernier marque-page | titre du marque-page le plus récent, ou « Aucun »     |
 
-## Scènes
+Les compteurs gardent leur historique : un graphique montre l'évolution de
+votre liste à lire.
 
-L'intégration ajoute ses propres cartes à l'éditeur de scènes (Gladys 5.1
-ou plus récent), dans la catégorie **Intégrations** :
+## Widget du tableau de bord
 
-- **Mouvement détecté** (déclencheur) — lance la scène quand un détecteur
-  de démonstration voit bouger quelque chose. Choisissez éventuellement le
-  détecteur et ce qui a bougé (personne, animal) ; laissés vides, toute
-  détection correspond. Les actions suivantes peuvent lire ce qui a bougé
-  avec `{{triggerEvent.data.target}}`.
-- **Identifier un appareil** (action) — fait se signaler l'appareil choisi.
-  Elle indique si l'appareil a pu se signaler, pour que les actions
-  suivantes puissent en dépendre.
+**Karakeep** : trois tuiles (marque-pages, non archivés, favoris), les six
+marque-pages les plus récents et un bouton **Enregistrer**. Dans les réglages
+du widget, **Marque-pages affichés** choisit les plus récents, les derniers
+favoris ou les derniers non archivés. Touchez un marque-page pour lire sa
+description ou sa note, et ouvrir le lien (liens https seulement ; **Ouvrir
+dans Karakeep** apparaît quand Karakeep est joint en https). **Enregistrer**
+ouvre un formulaire : tapez un lien (`https://…` ou `www.…`) ou le texte d'une
+note, cochez **Favori** si vous le souhaitez, et l'intégration l'enregistre.
 
-## Tableau de bord
+## Déclencheurs de scène
 
-Ajoutez le widget **État de la démo** à un tableau de bord : il affiche en
-direct la température de la station météo et la puissance de la prise du
-bureau, la connexion utilisée par la prise (en orange si dégradée) et la
-position observée. Son bouton **Identifier la lampe** fait se signaler la
-lampe de démonstration.
+- **Nouveau marque-page** : un lien, une note ou un fichier est enregistré dans
+  Karakeep, depuis l'application web, l'extension du navigateur, l'application
+  mobile ou un flux RSS. Le filtre **Type** ne garde que les liens, les notes ou
+  les fichiers. Les imports et les marque-pages enregistrés par cette
+  intégration ne sont pas annoncés.
+- **Marque-page mis en favori** : un marque-page est mis en favori dans
+  Karakeep.
+
+Variables des deux : **Titre**, **Lien** (vide pour une note), **Texte de la
+note** (vide pour un lien), **Type** (`link`, `text` ou `asset`), **Type, en
+toutes lettres** et **Tags** (séparés par des virgules).
+
+La première lecture après l'installation est silencieuse : les marque-pages
+déjà présents ne sont pas annoncés. Dix événements au plus partent par lecture ;
+le reste est compté comme vu.
+
+## Actions de scène
+
+- **Enregistrer un lien dans Karakeep** : **Lien** (obligatoire) et, si vous le
+  souhaitez, **Titre**, **Liste** (le nom d'une liste existante, majuscules ou
+  minuscules indifférentes), **Tags** (séparés par des virgules ; les tags
+  absents sont créés) et **Mettre en favori**. Renvoie **Identifiant du
+  marque-page**, **Titre** et **Déjà enregistré** (le lien était déjà dans
+  Karakeep : Karakeep ne garde qu'un marque-page par lien).
+- **Enregistrer une note dans Karakeep** : la même chose, avec le **Texte de la
+  note** à la place du lien. Renvoie **Identifiant du marque-page** et
+  **Titre**.
+
+Une liste intelligente ne peut pas recevoir de marque-page : Karakeep la remplit
+d'après sa requête.
+
+## Exemples de scènes
+
+- **Bouton des courses** : un bouton Zigbee de la cuisine est appuyé →
+  **Enregistrer une note dans Karakeep** avec le texte `Racheter du café`, liste
+  `Courses`, tag `maison`.
+- **Rappel de lecture** : chaque vendredi à 18 h → continuer seulement si la
+  fonctionnalité **Non archivés** dépasse 20 → envoyer un message « Votre liste
+  à lire Karakeep dépasse 20 marque-pages ».
+- **Notes sur le téléphone** : déclencheur **Nouveau marque-page**, type
+  **Note** → envoyer un message « Note : {{triggerEvent.data.text}} ».
+- **Favori à partager** : déclencheur **Marque-page mis en favori** → envoyer
+  un message « Nouveau favori : {{triggerEvent.data.title}}
+  {{triggerEvent.data.url}} ».
 
 ## Dépannage
 
-L'intégration journalise tout ce qu'elle fait : consultez les logs de
-l'intégration depuis l'interface Gladys (ou `docker logs` sur l'hôte) avec
-`LOG_LEVEL=debug` pour le détail complet.
+- **« Karakeep a refusé la clé d'API »** : la clé a été supprimée ou mal
+  recopiée. Créez-en une nouvelle dans Karakeep → Paramètres → Clés API.
+- **« Karakeep ne répond pas »** : vérifiez l'adresse et le port depuis la
+  machine de Gladys. Le conteneur est sur un réseau en pont : `localhost`
+  désigne le conteneur lui-même, saisissez plutôt l'adresse IP du serveur.
+- **« Cette adresse ne répond pas comme Karakeep »** : une page de connexion
+  d'un proxy répond à la place de Karakeep. Saisissez l'adresse de Karakeep
+  lui-même, ou laissez passer la machine de Gladys.
+- **« Aucune liste … dans Karakeep »** : le nom de liste de l'action de scène
+  doit correspondre à une liste existante. Créez-la d'abord dans Karakeep.
+- Pour plus de détails dans les journaux de l'intégration, réglez
+  `LOG_LEVEL=debug`.
+
+## Limites
+
+- Un seul utilisateur Karakeep : le propriétaire de la clé d'API.
+- Les déclencheurs partent à la lecture suivante (5 minutes par défaut), pas
+  instantanément : Karakeep ne pousse rien.
+- Mettre puis retirer un favori entre deux lectures passe inaperçu ; un favori
+  ajouté pendant qu'un autre est retiré est vu dans l'heure.
+- L'intégration ne supprime ni n'archive jamais rien dans Karakeep.
+- Sans lien avec le projet Karakeep.

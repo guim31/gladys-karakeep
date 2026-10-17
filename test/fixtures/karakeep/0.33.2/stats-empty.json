@@ -1,0 +1,154 @@
+{
+  "status": 200,
+  "body": {
+    "numBookmarks": 0,
+    "numFavorites": 0,
+    "numArchived": 0,
+    "numTags": 0,
+    "numLists": 0,
+    "numHighlights": 0,
+    "bookmarksByType": {
+      "link": 0,
+      "text": 0,
+      "asset": 0
+    },
+    "topDomains": [],
+    "totalAssetSize": 0,
+    "assetsByType": [],
+    "bookmarkingActivity": {
+      "thisWeek": 0,
+      "thisMonth": 0,
+      "thisYear": 0,
+      "byHour": [
+        {
+          "hour": 0,
+          "count": 0
+        },
+        {
+          "hour": 1,
+          "count": 0
+        },
+        {
+          "hour": 2,
+          "count": 0
+        },
+        {
+          "hour": 3,
+          "count": 0
+        },
+        {
+          "hour": 4,
+          "count": 0
+        },
+        {
+          "hour": 5,
+          "count": 0
+        },
+        {
+          "hour": 6,
+          "count": 0
+        },
+        {
+          "hour": 7,
+          "count": 0
+        },
+        {
+          "hour": 8,
+          "count": 0
+        },
+        {
+          "hour": 9,
+          "count": 0
+        },
+        {
+          "hour": 10,
+          "count": 0
+        },
+        {
+          "hour": 11,
+          "count": 0
+        },
+        {
+          "hour": 12,
+          "count": 0
+        },
+        {
+          "hour": 13,
+          "count": 0
+        },
+        {
+          "hour": 14,
+          "count": 0
+        },
+        {
+          "hour": 15,
+          "count": 0
+        },
+        {
+          "hour": 16,
+          "count": 0
+        },
+        {
+          "hour": 17,
+          "count": 0
+        },
+        {
+          "hour": 18,
+          "count": 0
+        },
+        {
+          "hour": 19,
+          "count": 0
+        },
+        {
+          "hour": 20,
+          "count": 0
+        },
+        {
+          "hour": 21,
+          "count": 0
+        },
+        {
+          "hour": 22,
+          "count": 0
+        },
+        {
+          "hour": 23,
+          "count": 0
+        }
+      ],
+      "byDayOfWeek": [
+        {
+          "day": 0,
+          "count": 0
+        },
+        {
+          "day": 1,
+          "count": 0
+        },
+        {
+          "day": 2,
+          "count": 0
+        },
+        {
+          "day": 3,
+          "count": 0
+        },
+        {
+          "day": 4,
+          "count": 0
+        },
+        {
+          "day": 5,
+          "count": 0
+        },
+        {
+          "day": 6,
+          "count": 0
+        }
+      ]
+    },
+    "tagUsage": [],
+    "bookmarksBySource": []
+  }
+}

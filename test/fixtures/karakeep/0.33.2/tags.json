@@ -1,0 +1,27 @@
+{
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "tags": [
+      {
+        "id": "b7psjzzotyept3fn54kjbfx0",
+        "name": "maison",
+        "numBookmarks": 1,
+        "numBookmarksByAttachedType": {
+          "ai": 0,
+          "human": 1
+        }
+      },
+      {
+        "id": "fc14mfvkxodwwow0hn365kus",
+        "name": "courses",
+        "numBookmarks": 1,
+        "numBookmarksByAttachedType": {
+          "ai": 0,
+          "human": 1
+        }
+      }
+    ],
+    "nextCursor": null
+  }
+}

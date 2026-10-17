@@ -30,6 +30,16 @@ Gladys before reporting a problem.
 
 In scope: the code of this repository and the Docker image it publishes.
 
+What the integration holds: the Karakeep address and an API key, kept by
+Gladys in the integration configuration (never logged, never written to
+`/data`). `/data` holds a small JSON file listing the Karakeep ids of the
+newest bookmarks and of the favourites already seen by the scene triggers. The
+container only talks to the Karakeep address, over HTTP or HTTPS. With the API
+key it reads the statistics, bookmarks and lists, and it writes only what a
+scene action or the widget form asks for: a new bookmark, its tags, its list,
+its favourite flag. It never deletes nor archives anything.
+
 Out of scope: Gladys Assistant itself (see its
 [security policy](https://github.com/GladysAssistant/Gladys/security/policy)),
-and the third-party services and devices the integration talks to.
+and Karakeep itself (see the
+[Karakeep repository](https://github.com/karakeep-app/karakeep)).
