@@ -63,8 +63,15 @@ test('errors are told apart, with the reason Karakeep gave', async () => {
     'unreachable',
     'Karakeep unreachable (EHOSTUNREACH)',
   ]);
+  // AbortSignal.timeout does not hold the event loop: a timer does, until the abort.
   const slow = (url, { signal }) =>
-    new Promise((resolve, reject) => signal.addEventListener('abort', () => reject(signal.reason)));
+    new Promise((resolve, reject) => {
+      const hold = setTimeout(() => {}, 5_000);
+      signal.addEventListener('abort', () => {
+        clearTimeout(hold);
+        reject(signal.reason);
+      });
+    });
   assert.equal((await kindOf(client(slow).me()))[0], 'timeout');
 });
 
