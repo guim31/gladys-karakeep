@@ -129,6 +129,7 @@ consulta.
 - Un solo usuario de Karakeep: el propietario de la clave de API.
 - Los disparadores se activan en la siguiente lectura (5 minutos por defecto),
   no al instante: Karakeep no envía nada por sí mismo.
-- Marcar y desmarcar un favorito entre dos lecturas pasa desapercibido.
+- Marcar y desmarcar un favorito entre dos lecturas pasa desapercibido; un
+  favorito marcado mientras se quita otro se detecta en menos de una hora.
 - La integración nunca elimina ni archiva nada en Karakeep.
 - Sin relación con el proyecto Karakeep.

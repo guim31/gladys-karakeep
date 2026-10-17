@@ -122,6 +122,8 @@ export const INIT_FAILED = {
 // name, `{detail}` the reason Karakeep gave.
 export const COMMAND_ERRORS = {
   en: {
+    timeout: 'Karakeep answered too late: the bookmark may have been saved anyway.',
+    http: 'Karakeep could not save the bookmark: {detail}',
     url: 'Enter a link starting with http:// or https://.',
     text: 'Enter the text of the note.',
     content: 'Enter a link or the text of a note.',
@@ -134,6 +136,8 @@ export const COMMAND_ERRORS = {
     form: 'Update Gladys to 5.2 or later to use this form.',
   },
   fr: {
+    timeout: 'Karakeep a répondu trop tard : le marque-page a peut-être été enregistré quand même.',
+    http: "Karakeep n'a pas pu enregistrer le marque-page : {detail}",
     url: 'Saisissez un lien commençant par http:// ou https://.',
     text: 'Saisissez le texte de la note.',
     content: "Saisissez un lien ou le texte d'une note.",
@@ -146,6 +150,9 @@ export const COMMAND_ERRORS = {
     form: 'Mettez Gladys à jour (5.2 ou plus) pour utiliser ce formulaire.',
   },
   de: {
+    timeout:
+      'Karakeep hat zu spät geantwortet: Das Lesezeichen wurde vielleicht trotzdem gespeichert.',
+    http: 'Karakeep konnte das Lesezeichen nicht speichern: {detail}',
     url: 'Gib einen Link ein, der mit http:// oder https:// beginnt.',
     text: 'Gib den Text der Notiz ein.',
     content: 'Gib einen Link oder den Text einer Notiz ein.',
@@ -159,6 +166,9 @@ export const COMMAND_ERRORS = {
     form: 'Aktualisiere Gladys auf 5.2 oder neuer, um dieses Formular zu nutzen.',
   },
   es: {
+    timeout:
+      'Karakeep respondió demasiado tarde: puede que el marcador se haya guardado de todos modos.',
+    http: 'Karakeep no pudo guardar el marcador: {detail}',
     url: 'Introduzca un enlace que empiece por http:// o https://.',
     text: 'Introduzca el texto de la nota.',
     content: 'Introduzca un enlace o el texto de una nota.',

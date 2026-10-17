@@ -39,6 +39,9 @@ export const DEFAULT_TIMINGS = {
 
 export const LATEST_COUNT = 20;
 export const MAX_FAVOURITES = 1000;
+// A star set and another removed between two reads leave the count unchanged:
+// the whole favourite list is read again at least this often.
+export const FAVOURITES_FULL_READ = 3_600_000;
 // An RSS feed or a burst of saves can bring many bookmarks at once: past that
 // many events in one read, the rest is recorded as seen without firing.
 export const MAX_EVENTS_PER_READ = 10;
@@ -81,6 +84,9 @@ export class Hub {
     this.own = new Set();
     /** the bookmarks the integration starred itself */
     this.ownFavourites = new Set();
+    this.favouritesReadAt = -Infinity;
+    this.eventFailing = false;
+    this.devicesFailing = false;
     this.widgetLists = new Map();
     this.configuring = Promise.resolve();
     this.refreshTimer = null;
@@ -223,8 +229,13 @@ export class Hub {
       // A favourite is told by the list of favourites, sorted by creation
       // date, not by the time it was starred: read it whole, but only when
       // the number of favourites changed (or for the first baseline).
-      if (!known || known.favouriteCount !== stats.numFavorites) {
+      if (
+        !known ||
+        known.favouriteCount !== stats.numFavorites ||
+        this.now() - this.favouritesReadAt >= FAVOURITES_FULL_READ
+      ) {
         favourites = stats.numFavorites > 0 ? await client.favourites(MAX_FAVOURITES) : [];
+        this.favouritesReadAt = this.now();
       }
     } catch (err) {
       if (client !== this.client) {
@@ -313,9 +324,17 @@ export class Hub {
       events.push(...added.map((b) => ({ trigger: TRIGGERS.added, bookmark: b })));
       if (favourites) {
         const starred = new Set(known.favourites);
+        // Past the cap, the list is the newest favourites only: one that slid
+        // in because a newer one left is older than the previous window.
+        const oldest = known.favouritesOldest ?? '';
         events.push(
           ...favourites
-            .filter((b) => !starred.has(b.id) && !this.ownFavourites.has(b.id))
+            .filter(
+              (b) =>
+                !starred.has(b.id) &&
+                !this.ownFavourites.has(b.id) &&
+                (oldest === '' || b.created >= oldest),
+            )
             .reverse()
             .map((b) => ({ trigger: TRIGGERS.favourited, bookmark: b })),
         );
@@ -333,9 +352,24 @@ export class Hub {
       logger.debug(`${trigger}: ${bookmark.id}`);
       try {
         await this.gladys.publishSceneEvent(trigger, this.#eventData(bookmark));
+        if (this.eventFailing) {
+          logger.info('Scene events accepted again');
+        }
+        this.eventFailing = false;
       } catch (err) {
-        failed[trigger].add(bookmark.id);
-        logger.warn(`Cannot fire ${trigger}: ${err.message}`);
+        // A refusal for good (4xx but 429) is not retried: it would be
+        // refused at every read.
+        const status = err?.status;
+        const final = Number.isInteger(status) && status >= 400 && status < 500 && status !== 429;
+        if (!final) {
+          failed[trigger].add(bookmark.id);
+        }
+        if (this.eventFailing) {
+          logger.debug(`Cannot fire ${trigger}: ${err.message}`);
+        } else {
+          logger.warn(`Cannot fire ${trigger}: ${err.message}`);
+        }
+        this.eventFailing = true;
       }
     }
     // The date from which a bookmark counts as new: the newest one seen, or
@@ -354,6 +388,11 @@ export class Hub {
       favourites: favourites
         ? favourites.map((b) => b.id).filter((id) => !failed[TRIGGERS.favourited].has(id))
         : known.favourites,
+      favouritesOldest: favourites
+        ? favourites.length >= MAX_FAVOURITES
+          ? (dates(favourites)[0] ?? '')
+          : ''
+        : (known.favouritesOldest ?? ''),
       favouriteCount:
         favourites && failed[TRIGGERS.favourited].size === 0
           ? favouriteCount
@@ -361,6 +400,14 @@ export class Hub {
             ? -1
             : known.favouriteCount,
     };
+    // Once seen, a bookmark saved here needs no more shielding: a star set
+    // by hand later on must be announced.
+    for (const id of next.favourites) {
+      this.ownFavourites.delete(id);
+    }
+    for (const id of next.bookmarks) {
+      this.own.delete(id);
+    }
     if (JSON.stringify(next) !== JSON.stringify(this.seen)) {
       this.seen = next;
       await this.store.save(next);
@@ -398,8 +445,15 @@ export class Hub {
     try {
       await this.gladys.publishDiscoveredDevices(this.buildDevices());
     } catch (err) {
-      logger.error('Cannot publish the devices', err);
+      if (this.devicesFailing) {
+        logger.debug(`Cannot publish the devices: ${err.message}`);
+      } else {
+        logger.warn(`Cannot publish the devices: ${err.message}`);
+      }
+      this.devicesFailing = true;
+      return;
     }
+    this.devicesFailing = false;
   }
 
   /**
@@ -560,9 +614,10 @@ export class Hub {
     if (fingerprint === this.lastStatus) {
       return;
     }
-    this.lastStatus = fingerprint;
     try {
       await this.gladys.setConnectionStatus(connected, message ?? undefined);
+      // Recorded once Gladys took it: a failed call is sent again next time.
+      this.lastStatus = fingerprint;
     } catch (err) {
       logger.warn(`Cannot set the connection status: ${err.message}`);
     }
@@ -636,10 +691,11 @@ export class Hub {
     } catch (err) {
       throw this.#saveError(err);
     }
+    const cleanTitle = typeof title === 'string' ? title.trim().slice(0, 1000) : '';
     let created;
     try {
       created = await client.createBookmark(body, {
-        title: typeof title === 'string' ? title.trim().slice(0, 1000) : '',
+        title: cleanTitle,
         favourited: favoured,
       });
     } catch (err) {
@@ -651,8 +707,17 @@ export class Hub {
       this.#remember(this.ownFavourites, bookmark.id);
     }
     try {
+      // Karakeep answers an already saved link as it is: apply the title and
+      // the star asked for.
+      const changes = {};
       if (existed && favoured && bookmark.favourited !== true) {
-        await client.favourite(bookmark.id);
+        changes.favourited = true;
+      }
+      if (existed && body.type === 'link' && cleanTitle && cleanTitle !== bookmark.title) {
+        changes.title = cleanTitle;
+      }
+      if (Object.keys(changes).length > 0) {
+        Object.assign(bookmark, await client.update(bookmark.id, changes));
       }
       if (tagNames.length > 0) {
         await client.attachTags(bookmark.id, tagNames);
@@ -661,7 +726,8 @@ export class Hub {
         await client.addToList(target.id, bookmark.id);
       }
     } catch (err) {
-      throw new CommandError('after', language, { detail: err.message });
+      this.refresh().catch(() => {});
+      throw new CommandError('after', language, { detail: err.message.replace(/^[^:]*: /, '') });
     }
     const summary = summarizeBookmark(bookmark);
     logger.info(
@@ -685,13 +751,19 @@ export class Hub {
       return err;
     }
     const kind = err instanceof KarakeepError ? err.kind : 'unreachable';
+    const detail = err.message.replace(/^[^:]*: /, '');
     if (kind === 'unauthorized') {
       return new CommandError('unauthorized', this.language);
     }
     if (kind === 'rejected') {
-      return new CommandError('rejected', this.language, {
-        detail: err.message.replace(/^[^:]*: /, ''),
-      });
+      return new CommandError('rejected', this.language, { detail });
+    }
+    if (kind === 'timeout') {
+      // The request may have reached Karakeep: the bookmark may exist.
+      return new CommandError('timeout', this.language);
+    }
+    if (kind === 'http' || kind === 'not_found' || kind === 'invalid') {
+      return new CommandError('http', this.language, { detail });
     }
     return new CommandError('unreachable', this.language);
   }

@@ -133,6 +133,7 @@ anhand ihrer Abfrage.
 - Die Auslöser feuern beim nächsten Lesen (standardmäßig 5 Minuten), nicht
   sofort: Karakeep sendet nichts von sich aus.
 - Ein Favorit, der zwischen zwei Lesevorgängen gesetzt und wieder entfernt wird,
-  bleibt unbemerkt.
+  bleibt unbemerkt; ein Favorit, der gesetzt wird, während ein anderer entfernt
+  wird, wird innerhalb einer Stunde erkannt.
 - Die Integration löscht und archiviert in Karakeep nie etwas.
 - Nicht mit dem Karakeep-Projekt verbunden.

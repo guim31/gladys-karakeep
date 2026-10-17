@@ -120,6 +120,7 @@ A smart list cannot receive a bookmark: Karakeep fills it from its query.
 - One Karakeep user: the owner of the API key.
 - The triggers fire at the next read (5 minutes by default), not instantly:
   Karakeep pushes nothing.
-- Starring and un-starring the same bookmark between two reads goes unnoticed.
+- Starring and un-starring the same bookmark between two reads goes unnoticed;
+  a star set while another is removed is seen within the hour.
 - The integration never deletes nor archives anything in Karakeep.
 - Not affiliated with the Karakeep project.

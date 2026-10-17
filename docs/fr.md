@@ -131,6 +131,7 @@ d'après sa requête.
 - Un seul utilisateur Karakeep : le propriétaire de la clé d'API.
 - Les déclencheurs partent à la lecture suivante (5 minutes par défaut), pas
   instantanément : Karakeep ne pousse rien.
-- Mettre puis retirer un favori entre deux lectures passe inaperçu.
+- Mettre puis retirer un favori entre deux lectures passe inaperçu ; un favori
+  ajouté pendant qu'un autre est retiré est vu dans l'heure.
 - L'intégration ne supprime ni n'archive jamais rien dans Karakeep.
 - Sans lien avec le projet Karakeep.

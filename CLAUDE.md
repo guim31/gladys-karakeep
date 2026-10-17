@@ -101,7 +101,9 @@ test/fixtures/karakeep/0.33.2/    bodies recorded on a real Karakeep 0.33.2
 - `GET /bookmarks` sorts by **creation date** only (ties broken by id), with
   `favourited` / `archived` filters and a `cursor`. A bookmark starred today
   may be old: the favourite trigger reads the whole favourite list (100 per
-  page, 1000 at most), and only when `numFavorites` changed.
+  page, 1000 at most) when `numFavorites` changed, and at least hourly (a
+  swap keeps the count). Past the cap, a favourite older than the previous
+  window is not announced (it slid in).
 - `includeContent=false` still returns `content.url`, the crawled title and
   description; only the HTML is left out.
 - **No loop**: bookmarks saved by the integration are never announced as new,

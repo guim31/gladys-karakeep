@@ -73,7 +73,15 @@ export class KarakeepClient {
       const cause = err?.cause?.code ?? err?.cause?.message ?? err?.message ?? 'error';
       throw new KarakeepError('unreachable', `Karakeep unreachable (${cause})`);
     }
-    const raw = await response.text().catch(() => '');
+    let raw;
+    try {
+      raw = await response.text();
+    } catch (err) {
+      if (err?.name === 'TimeoutError' || err?.name === 'AbortError') {
+        throw new KarakeepError('timeout', `No answer from Karakeep within ${this.timeout} ms`);
+      }
+      throw new KarakeepError('unreachable', `Karakeep unreachable (${err?.message ?? 'error'})`);
+    }
     if (!response.ok) {
       throw KarakeepClient.#fail(path, response.status, raw);
     }
@@ -204,11 +212,14 @@ export class KarakeepClient {
     return { bookmark: data, existed: status === 200 };
   }
 
-  /** Mark a bookmark as favourite. */
-  async favourite(bookmarkId) {
-    await this.#send('PATCH', `/bookmarks/${encodeURIComponent(bookmarkId)}`, {
-      favourited: true,
-    });
+  /** Change a bookmark (`{ title, favourited, ... }`); resolves the bookmark. */
+  async update(bookmarkId, changes) {
+    const { data } = await this.#send(
+      'PATCH',
+      `/bookmarks/${encodeURIComponent(bookmarkId)}`,
+      changes,
+    );
+    return data && typeof data === 'object' ? data : {};
   }
 
   /** Attach tags by name (Karakeep creates the missing ones). */

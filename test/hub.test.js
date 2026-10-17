@@ -363,3 +363,72 @@ test('onPoll republishes the states of our device only', async (t) => {
     success: true,
   });
 });
+
+test('review fixes: own star then hand star, swapped favourites, final refusals', async (t) => {
+  const world = await createWorld();
+  t.after(() => world.app.stop());
+  // Saved as favourite by a scene, un-starred then starred again by hand.
+  const saved = await world.fake.sceneAction('save_link', {
+    url: 'https://example.org/star',
+    favourite: true,
+  });
+  await settle(20);
+  await world.hub.refresh();
+  const id = saved.data.outputs.bookmark_id;
+  world.server.favourite(id, false);
+  await world.hub.refresh();
+  world.server.favourite(id, true);
+  await world.hub.refresh();
+  assert.deepEqual(
+    events(world.fake, 'bookmark_favourited').map((e) => e.data.url),
+    ['https://example.org/star'],
+  );
+
+  // One star set, one removed: same count, seen at the hourly full read.
+  const note = world.server.state.bookmarks.find((b) => b.content.type === 'text');
+  world.server.favourite(note.id, true);
+  world.server.favourite(id, false);
+  await world.hub.refresh();
+  assert.equal(events(world.fake, 'bookmark_favourited').length, 1);
+  world.clock.now += 3_600_000;
+  await world.hub.refresh();
+  assert.equal(events(world.fake, 'bookmark_favourited').length, 2);
+
+  // A refusal for good (4xx) is not retried at every read.
+  let calls = 0;
+  world.gladys.publishSceneEvent = async () => {
+    calls += 1;
+    throw Object.assign(new Error('not declared'), { status: 404 });
+  };
+  world.server.addBookmark({ url: 'https://example.org/refused' });
+  await world.hub.refresh();
+  await world.hub.refresh();
+  assert.equal(calls, 1);
+});
+
+test('review fixes: title of an already saved link, timeout told apart', async (t) => {
+  const world = await createWorld({ config: { url: HOST, api_key: API_KEY, language: 'en' } });
+  t.after(() => world.app.stop());
+  const ack = await world.fake.sceneAction('save_link', {
+    url: 'https://gladysassistant.com/',
+    title: 'Gladys home page',
+  });
+  assert.equal(ack.data.outputs.already_saved, true);
+  assert.equal(ack.data.outputs.title, 'Gladys home page');
+  const stored = world.server.state.bookmarks.find((b) => b.id === ack.data.outputs.bookmark_id);
+  assert.equal(stored.title, 'Gladys home page');
+
+  const fetch = world.server.fetch;
+  world.hub.client.fetch = (url, init) =>
+    init.method === 'POST'
+      ? new Promise((resolve, reject) => {
+          const hold = setTimeout(() => {}, 5_000);
+          init.signal.addEventListener('abort', () => {
+            clearTimeout(hold);
+            reject(init.signal.reason);
+          });
+        })
+      : fetch(url, init);
+  const late = await world.fake.sceneAction('save_note', { text: 'Late' });
+  assert.match(late.error, /may have been saved/);
+});
