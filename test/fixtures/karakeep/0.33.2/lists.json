@@ -1,0 +1,31 @@
+{
+  "status": 200,
+  "body": {
+    "lists": [
+      {
+        "id": "uts4e5jcwr9ppn2oewtic3n5",
+        "name": "À lire",
+        "description": null,
+        "icon": "📚",
+        "parentId": null,
+        "type": "manual",
+        "query": null,
+        "public": false,
+        "hasCollaborators": false,
+        "userRole": "owner"
+      },
+      {
+        "id": "dru4ruthy7xys9nh3pw2hbul",
+        "name": "Smart",
+        "description": null,
+        "icon": "🔎",
+        "parentId": null,
+        "type": "smart",
+        "query": "#gladys",
+        "public": false,
+        "hasCollaborators": false,
+        "userRole": "owner"
+      }
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "status": 201,
+  "body": {
+    "id": "ef174kd8vvofoy16k3ou7tk4",
+    "createdAt": "2026-10-17T18:12:00.000Z",
+    "modifiedAt": "2026-10-17T18:12:00.000Z",
+    "title": "Gladys Assistant",
+    "archived": false,
+    "favourited": false,
+    "taggingStatus": "pending",
+    "summarizationStatus": "pending",
+    "embeddingStatus": "pending",
+    "note": null,
+    "summary": null,
+    "source": "api",
+    "userId": "rs4igra52w4ugtrtkwgrwj31",
+    "tags": [],
+    "content": {
+      "type": "link",
+      "url": "https://gladysassistant.com/",
+      "title": null,
+      "description": null,
+      "imageUrl": null,
+      "favicon": null,
+      "htmlContent": null,
+      "contentAssetId": null,
+      "readerViewStatus": null,
+      "readerViewScore": null,
+      "crawledAt": null,
+      "crawlStatus": "pending",
+      "author": null,
+      "publisher": null,
+      "datePublished": null,
+      "dateModified": null
+    },
+    "assets": [],
+    "alreadyExists": false
+  }
+}

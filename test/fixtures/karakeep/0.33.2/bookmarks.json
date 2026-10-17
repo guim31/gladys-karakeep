@@ -1,0 +1,92 @@
+{
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "bookmarks": [
+      {
+        "id": "n675x0w0rm4kz6i5zkejj4ca",
+        "firstCreatedAt": "2026-10-17T18:12:00.000Z",
+        "createdAt": "2026-10-17T18:12:00.000Z",
+        "modifiedAt": "2026-10-17T18:12:09.000Z",
+        "title": "Note",
+        "archived": false,
+        "favourited": false,
+        "taggingStatus": "success",
+        "summarizationStatus": null,
+        "embeddingStatus": "pending",
+        "note": null,
+        "summary": null,
+        "source": "api",
+        "userId": "rs4igra52w4ugtrtkwgrwj31",
+        "tags": [
+          {
+            "id": "b7psjzzotyept3fn54kjbfx0",
+            "name": "maison",
+            "attachedBy": "human"
+          },
+          {
+            "id": "fc14mfvkxodwwow0hn365kus",
+            "name": "courses",
+            "attachedBy": "human"
+          }
+        ],
+        "content": {
+          "type": "text",
+          "text": "Racheter des piles AA",
+          "sourceUrl": null
+        },
+        "assets": []
+      },
+      {
+        "id": "ef174kd8vvofoy16k3ou7tk4",
+        "firstCreatedAt": "2026-10-17T18:12:00.000Z",
+        "createdAt": "2026-10-17T18:12:00.000Z",
+        "modifiedAt": "2026-10-17T18:12:09.000Z",
+        "title": "Gladys Assistant",
+        "archived": false,
+        "favourited": true,
+        "taggingStatus": "success",
+        "summarizationStatus": "success",
+        "embeddingStatus": "pending",
+        "note": null,
+        "summary": null,
+        "source": "api",
+        "userId": "rs4igra52w4ugtrtkwgrwj31",
+        "tags": [],
+        "content": {
+          "type": "link",
+          "url": "https://gladysassistant.com/",
+          "title": "Private, self-hosted smart home with AI | Gladys Assistant",
+          "description": "Free, open-source smart home software that runs on your own hardware, even offline. Works with Zigbee, Matter, Hue and SmartThings. A simpler Home Assistant alternative.",
+          "imageUrl": "https://gladysassistant.com/img/presentation/gladys-assistant-og-image-v5-en.jpg",
+          "imageAssetId": "f01f90ad-4a09-4e7d-87a2-03e4401a4814",
+          "favicon": "https://gladysassistant.com/img/favicon/favicon.ico",
+          "htmlContent": null,
+          "contentAssetId": "54e98616-f342-4a51-afee-5cea149eddf0",
+          "readerViewStatus": "uncertain",
+          "readerViewScore": 60,
+          "preferredPreview": "overview",
+          "crawledAt": "2026-10-17T18:12:03.000Z",
+          "crawlStatus": "success",
+          "author": null,
+          "publisher": "Gladys Assistant",
+          "datePublished": null,
+          "dateModified": null
+        },
+        "assets": [
+          {
+            "id": "f01f90ad-4a09-4e7d-87a2-03e4401a4814",
+            "assetType": "bannerImage",
+            "fileName": null
+          },
+          {
+            "id": "54e98616-f342-4a51-afee-5cea149eddf0",
+            "assetType": "linkHtmlContent",
+            "fileName": null
+          }
+        ]
+      }
+    ],
+    "nextCursor": null
+  }
+}

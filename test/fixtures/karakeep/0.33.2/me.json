@@ -1,0 +1,10 @@
+{
+  "status": 200,
+  "body": {
+    "id": "rs4igra52w4ugtrtkwgrwj31",
+    "name": "Test",
+    "email": "demo@example.org",
+    "image": null,
+    "localUser": true
+  }
+}

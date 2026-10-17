@@ -1,0 +1,26 @@
+{
+  "status": 201,
+  "body": {
+    "id": "n675x0w0rm4kz6i5zkejj4ca",
+    "createdAt": "2026-10-17T18:12:00.000Z",
+    "modifiedAt": "2026-10-17T18:12:00.000Z",
+    "title": "Note",
+    "archived": false,
+    "favourited": false,
+    "taggingStatus": "pending",
+    "summarizationStatus": null,
+    "embeddingStatus": "pending",
+    "note": null,
+    "summary": null,
+    "source": "api",
+    "userId": "rs4igra52w4ugtrtkwgrwj31",
+    "tags": [],
+    "content": {
+      "type": "text",
+      "text": "Racheter des piles AA",
+      "sourceUrl": null
+    },
+    "assets": [],
+    "alreadyExists": false
+  }
+}

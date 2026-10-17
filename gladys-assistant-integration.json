@@ -1,177 +1,726 @@
 {
   "manifest_version": 1,
   "type": "device",
-  "name": "Demo Devices Template",
+  "name": "Karakeep",
   "description": {
-    "en": "Starter template showing sensors, a switch, a dimmable light and a smart plug.",
-    "fr": "Template de démarrage : capteurs, interrupteur, lampe variable et prise connectée."
+    "en": "Your Karakeep bookmarks in Gladys: counters, new bookmarks, and links or notes saved from scenes.",
+    "fr": "Vos marque-pages Karakeep dans Gladys : compteurs, nouveautés, liens et notes enregistrés par scène.",
+    "de": "Deine Karakeep-Lesezeichen in Gladys: Zähler, neue Einträge, Links und Notizen aus Szenen.",
+    "es": "Sus marcadores Karakeep en Gladys: contadores, novedades, enlaces y notas guardados desde escenas."
   },
   "version": "1.0.0",
-  "docker_image": "ghcr.io/gladysassistant/integration-template-js:1.0.0",
-  "gladys_version": ">=5.1.0",
-  "cover_image": "https://raw.githubusercontent.com/GladysAssistant/integration-template-js/master/cover.png",
-  "categories": ["lighting", "security", "environment"],
-  "transports": ["local", "cloud"],
+  "docker_image": "ghcr.io/guim31/gladys-karakeep:1.0.0",
+  "gladys_version": ">=5.2.0",
+  "cover_image": "https://raw.githubusercontent.com/guim31/gladys-karakeep/main/cover.png",
+  "categories": ["services"],
+  "transports": ["local"],
   "config_schema": [
     {
       "key": "intro",
       "type": "section",
-      "label": { "en": "Getting started", "fr": "Pour commencer" },
+      "label": {
+        "en": "Connect Karakeep",
+        "fr": "Connecter Karakeep",
+        "de": "Karakeep verbinden",
+        "es": "Conectar Karakeep"
+      },
       "description": {
-        "en": "The demo weather station reads real data from the free Open-Meteo API: pick the coordinates to observe. No account, no API key.",
-        "fr": "La station météo de démonstration lit de vraies données via l'API gratuite Open-Meteo : choisissez les coordonnées à observer. Pas de compte, pas de clé d'API."
+        "en": "Enter the address of your Karakeep server (port 3000 by default) and an API key: in Karakeep, open Settings → API keys and create one. The integration reads your counters and newest bookmarks, and saves the links and notes your scenes send it.",
+        "fr": "Saisissez l'adresse de votre serveur Karakeep (port 3000 par défaut) et une clé d'API : dans Karakeep, ouvrez Paramètres → Clés API et créez-en une. L'intégration lit vos compteurs et vos derniers marque-pages, et enregistre les liens et notes que vos scènes lui envoient.",
+        "de": "Gib die Adresse deines Karakeep-Servers (standardmäßig Port 3000) und einen API-Schlüssel ein: Öffne in Karakeep Einstellungen → API-Schlüssel und erstelle einen. Die Integration liest deine Zähler und neuesten Lesezeichen und speichert die Links und Notizen, die deine Szenen ihr schicken.",
+        "es": "Introduzca la dirección de su servidor Karakeep (puerto 3000 por defecto) y una clave de API: en Karakeep, abra Ajustes → Claves API y cree una. La integración lee sus contadores y sus últimos marcadores, y guarda los enlaces y notas que le envían sus escenas."
       },
       "links": [
         {
-          "url": "https://open-meteo.com/en/docs",
-          "label": { "en": "Open-Meteo documentation", "fr": "Documentation Open-Meteo" }
+          "url": "https://docs.karakeep.app/",
+          "label": {
+            "en": "Karakeep documentation",
+            "fr": "Documentation de Karakeep",
+            "de": "Karakeep-Dokumentation",
+            "es": "Documentación de Karakeep"
+          }
         }
       ]
     },
     {
-      "key": "latitude",
-      "type": "number",
-      "label": { "en": "Latitude", "fr": "Latitude" },
-      "description": {
-        "en": "Latitude used for the demo weather sensor.",
-        "fr": "Latitude utilisée par le capteur météo de démonstration."
+      "key": "url",
+      "type": "string",
+      "label": {
+        "en": "Karakeep address",
+        "fr": "Adresse de Karakeep",
+        "de": "Karakeep-Adresse",
+        "es": "Dirección de Karakeep"
       },
-      "placeholder": { "en": "e.g. 48.8566", "fr": "ex. 48.8566" },
+      "placeholder": {
+        "en": "e.g. 192.168.1.50:3000",
+        "fr": "ex. 192.168.1.50:3000",
+        "de": "z. B. 192.168.1.50:3000",
+        "es": "p. ej. 192.168.1.50:3000"
+      },
       "required": true,
-      "default": 48.8566,
-      "min": -90,
-      "max": 90
+      "default": ""
     },
     {
-      "key": "longitude",
-      "type": "number",
-      "label": { "en": "Longitude", "fr": "Longitude" },
-      "description": {
-        "en": "Longitude used for the demo weather sensor.",
-        "fr": "Longitude utilisée par le capteur météo de démonstration."
+      "key": "api_key",
+      "type": "secret",
+      "label": {
+        "en": "API key",
+        "fr": "Clé d'API",
+        "de": "API-Schlüssel",
+        "es": "Clave de API"
       },
-      "placeholder": { "en": "e.g. 2.3522", "fr": "ex. 2.3522" },
-      "required": true,
-      "default": 2.3522,
-      "min": -180,
-      "max": 180
+      "description": {
+        "en": "Karakeep → Settings → API keys → New API key.",
+        "fr": "Karakeep → Paramètres → Clés API → Nouvelle clé.",
+        "de": "Karakeep → Einstellungen → API-Schlüssel → Neuer Schlüssel.",
+        "es": "Karakeep → Ajustes → Claves API → Nueva clave."
+      },
+      "required": true
     },
     {
-      "key": "unit",
+      "key": "refresh_minutes",
       "type": "select",
-      "label": { "en": "Temperature unit", "fr": "Unité de température" },
+      "label": {
+        "en": "Read Karakeep every",
+        "fr": "Lire Karakeep toutes les",
+        "de": "Karakeep lesen alle",
+        "es": "Leer Karakeep cada"
+      },
+      "description": {
+        "en": "New bookmarks and favourites are announced at the next read.",
+        "fr": "Les nouveaux marque-pages et favoris sont annoncés à la lecture suivante.",
+        "de": "Neue Lesezeichen und Favoriten werden beim nächsten Lesen gemeldet.",
+        "es": "Los nuevos marcadores y favoritos se anuncian en la siguiente lectura."
+      },
       "required": false,
-      "default": "celsius",
+      "default": "5",
       "options": [
-        { "value": "celsius", "label": { "en": "Celsius", "fr": "Celsius" } },
-        { "value": "fahrenheit", "label": { "en": "Fahrenheit", "fr": "Fahrenheit" } }
+        {
+          "value": "1",
+          "label": {
+            "en": "1 minute",
+            "fr": "1 minute",
+            "de": "1 Minute",
+            "es": "1 minuto"
+          }
+        },
+        {
+          "value": "5",
+          "label": {
+            "en": "5 minutes",
+            "fr": "5 minutes",
+            "de": "5 Minuten",
+            "es": "5 minutos"
+          }
+        },
+        {
+          "value": "15",
+          "label": {
+            "en": "15 minutes",
+            "fr": "15 minutes",
+            "de": "15 Minuten",
+            "es": "15 minutos"
+          }
+        },
+        {
+          "value": "30",
+          "label": {
+            "en": "30 minutes",
+            "fr": "30 minutes",
+            "de": "30 Minuten",
+            "es": "30 minutos"
+          }
+        },
+        {
+          "value": "60",
+          "label": {
+            "en": "60 minutes",
+            "fr": "60 minutes",
+            "de": "60 Minuten",
+            "es": "60 minutos"
+          }
+        }
       ]
     },
     {
-      "key": "poll_frequency",
-      "type": "number",
-      "label": { "en": "Refresh interval (s)", "fr": "Intervalle de rafraîchissement (s)" },
+      "key": "language",
+      "type": "select",
+      "label": {
+        "en": "Language of names and messages",
+        "fr": "Langue des noms et messages",
+        "de": "Sprache der Namen und Meldungen",
+        "es": "Idioma de nombres y mensajes"
+      },
       "description": {
-        "en": "How often sensors are polled, in seconds (one minute minimum).",
-        "fr": "Fréquence d'interrogation des capteurs, en secondes (une minute minimum)."
+        "en": "Feature names are set when a device is added to Gladys.",
+        "fr": "Les noms des fonctionnalités sont fixés à l'ajout d'un appareil dans Gladys.",
+        "de": "Die Namen der Funktionen werden beim Hinzufügen eines Geräts zu Gladys festgelegt.",
+        "es": "Los nombres de las funciones se fijan al añadir un dispositivo a Gladys."
       },
       "required": false,
-      "default": 300,
-      "min": 60,
-      "max": 3600
+      "default": "fr",
+      "options": [
+        {
+          "value": "en",
+          "label": {
+            "en": "English",
+            "fr": "Anglais",
+            "de": "Englisch",
+            "es": "Inglés"
+          }
+        },
+        {
+          "value": "fr",
+          "label": {
+            "en": "French",
+            "fr": "Français",
+            "de": "Französisch",
+            "es": "Francés"
+          }
+        },
+        {
+          "value": "de",
+          "label": {
+            "en": "German",
+            "fr": "Allemand",
+            "de": "Deutsch",
+            "es": "Alemán"
+          }
+        },
+        {
+          "value": "es",
+          "label": {
+            "en": "Spanish",
+            "fr": "Espagnol",
+            "de": "Spanisch",
+            "es": "Español"
+          }
+        }
+      ]
     }
   ],
   "actions": [
     {
-      "key": "test_weather",
-      "label": { "en": "Test the weather provider", "fr": "Tester le fournisseur météo" },
+      "key": "test_connection",
+      "label": {
+        "en": "Test the connection",
+        "fr": "Tester la connexion",
+        "de": "Verbindung testen",
+        "es": "Probar la conexión"
+      },
       "timeout_seconds": 30
-    },
-    {
-      "key": "identify",
-      "label": { "en": "Identify a device", "fr": "Identifier un appareil" },
-      "fields": [
-        {
-          "key": "device",
-          "type": "select",
-          "source": "devices",
-          "label": { "en": "Device", "fr": "Appareil" },
-          "required": true
-        }
-      ]
     }
   ],
   "scene_triggers": [
     {
-      "key": "motion_detected",
-      "label": { "en": "Motion detected", "fr": "Mouvement détecté" },
+      "key": "bookmark_added",
+      "label": {
+        "en": "New bookmark",
+        "fr": "Nouveau marque-page",
+        "de": "Neues Lesezeichen",
+        "es": "Nuevo marcador"
+      },
       "description": {
-        "en": "A demo motion sensor saw a person or an animal move.",
-        "fr": "Un détecteur de démonstration a vu bouger une personne ou un animal."
+        "en": "A link, note or file is saved in Karakeep (imports and the saves of this integration excepted).",
+        "fr": "Un lien, une note ou un fichier est enregistré dans Karakeep (hors imports et enregistrements de cette intégration).",
+        "de": "Ein Link, eine Notiz oder eine Datei wird in Karakeep gespeichert (außer Importen und Speicherungen dieser Integration).",
+        "es": "Se guarda un enlace, una nota o un archivo en Karakeep (salvo importaciones y guardados de esta integración)."
       },
       "fields": [
         {
-          "key": "device",
+          "key": "type",
           "type": "select",
-          "source": "devices",
-          "label": { "en": "Sensor", "fr": "Détecteur" }
-        },
-        {
-          "key": "target",
-          "type": "multi_select",
-          "label": { "en": "What moved", "fr": "Ce qui a bougé" },
+          "required": false,
+          "label": {
+            "en": "Type (empty: all)",
+            "fr": "Type (vide : tous)",
+            "de": "Typ (leer: alle)",
+            "es": "Tipo (vacío: todos)"
+          },
           "options": [
-            { "value": "person", "label": { "en": "Person", "fr": "Personne" } },
-            { "value": "animal", "label": { "en": "Animal", "fr": "Animal" } }
+            {
+              "value": "link",
+              "label": {
+                "en": "Link",
+                "fr": "Lien",
+                "de": "Link",
+                "es": "Enlace"
+              }
+            },
+            {
+              "value": "text",
+              "label": {
+                "en": "Note",
+                "fr": "Note",
+                "de": "Notiz",
+                "es": "Nota"
+              }
+            },
+            {
+              "value": "asset",
+              "label": {
+                "en": "File",
+                "fr": "Fichier",
+                "de": "Datei",
+                "es": "Archivo"
+              }
+            }
           ]
         }
       ],
       "variables": [
         {
-          "key": "target",
+          "key": "title",
           "type": "string",
-          "label": { "en": "What moved", "fr": "Ce qui a bougé" }
+          "label": {
+            "en": "Title",
+            "fr": "Titre",
+            "de": "Titel",
+            "es": "Título"
+          }
+        },
+        {
+          "key": "url",
+          "type": "string",
+          "label": {
+            "en": "Link",
+            "fr": "Lien",
+            "de": "Link",
+            "es": "Enlace"
+          }
+        },
+        {
+          "key": "text",
+          "type": "string",
+          "label": {
+            "en": "Text of the note",
+            "fr": "Texte de la note",
+            "de": "Text der Notiz",
+            "es": "Texto de la nota"
+          }
+        },
+        {
+          "key": "type",
+          "type": "string",
+          "label": {
+            "en": "Type (link, text, asset)",
+            "fr": "Type (link, text, asset)",
+            "de": "Typ (link, text, asset)",
+            "es": "Tipo (link, text, asset)"
+          }
+        },
+        {
+          "key": "type_name",
+          "type": "string",
+          "label": {
+            "en": "Type, in words",
+            "fr": "Type, en toutes lettres",
+            "de": "Typ, ausgeschrieben",
+            "es": "Tipo, en palabras"
+          }
+        },
+        {
+          "key": "tags",
+          "type": "string",
+          "label": {
+            "en": "Tags",
+            "fr": "Tags",
+            "de": "Tags",
+            "es": "Etiquetas"
+          }
+        }
+      ]
+    },
+    {
+      "key": "bookmark_favourited",
+      "label": {
+        "en": "Bookmark marked as favourite",
+        "fr": "Marque-page mis en favori",
+        "de": "Lesezeichen als Favorit markiert",
+        "es": "Marcador marcado como favorito"
+      },
+      "description": {
+        "en": "A bookmark is marked as favourite in Karakeep.",
+        "fr": "Un marque-page est mis en favori dans Karakeep.",
+        "de": "Ein Lesezeichen wird in Karakeep als Favorit markiert.",
+        "es": "Un marcador se marca como favorito en Karakeep."
+      },
+      "variables": [
+        {
+          "key": "title",
+          "type": "string",
+          "label": {
+            "en": "Title",
+            "fr": "Titre",
+            "de": "Titel",
+            "es": "Título"
+          }
+        },
+        {
+          "key": "url",
+          "type": "string",
+          "label": {
+            "en": "Link",
+            "fr": "Lien",
+            "de": "Link",
+            "es": "Enlace"
+          }
+        },
+        {
+          "key": "text",
+          "type": "string",
+          "label": {
+            "en": "Text of the note",
+            "fr": "Texte de la note",
+            "de": "Text der Notiz",
+            "es": "Texto de la nota"
+          }
+        },
+        {
+          "key": "type",
+          "type": "string",
+          "label": {
+            "en": "Type (link, text, asset)",
+            "fr": "Type (link, text, asset)",
+            "de": "Typ (link, text, asset)",
+            "es": "Tipo (link, text, asset)"
+          }
+        },
+        {
+          "key": "type_name",
+          "type": "string",
+          "label": {
+            "en": "Type, in words",
+            "fr": "Type, en toutes lettres",
+            "de": "Typ, ausgeschrieben",
+            "es": "Tipo, en palabras"
+          }
+        },
+        {
+          "key": "tags",
+          "type": "string",
+          "label": {
+            "en": "Tags",
+            "fr": "Tags",
+            "de": "Tags",
+            "es": "Etiquetas"
+          }
         }
       ]
     }
   ],
   "scene_actions": [
     {
-      "key": "identify_device",
-      "label": { "en": "Identify a device", "fr": "Identifier un appareil" },
-      "description": {
-        "en": "Make a device signal itself (the demo light blinks).",
-        "fr": "Fait se signaler un appareil (la lampe de démonstration clignote)."
+      "key": "save_link",
+      "label": {
+        "en": "Save a link in Karakeep",
+        "fr": "Enregistrer un lien dans Karakeep",
+        "de": "Link in Karakeep speichern",
+        "es": "Guardar un enlace en Karakeep"
       },
-      "timeout_seconds": 15,
+      "description": {
+        "en": "Saves a web address, in a list and with tags if you want.",
+        "fr": "Enregistre une adresse web, dans une liste et avec des tags si vous le souhaitez.",
+        "de": "Speichert eine Webadresse, auf Wunsch in einer Liste und mit Tags.",
+        "es": "Guarda una dirección web, en una lista y con etiquetas si lo desea."
+      },
+      "timeout_seconds": 30,
       "fields": [
         {
-          "key": "device",
-          "type": "select",
-          "source": "devices",
-          "label": { "en": "Device", "fr": "Appareil" },
-          "required": true
+          "key": "url",
+          "type": "string",
+          "required": true,
+          "label": {
+            "en": "Link",
+            "fr": "Lien",
+            "de": "Link",
+            "es": "Enlace"
+          },
+          "placeholder": {
+            "en": "https://…",
+            "fr": "https://…",
+            "de": "https://…",
+            "es": "https://…"
+          }
+        },
+        {
+          "key": "title",
+          "type": "string",
+          "required": false,
+          "label": {
+            "en": "Title (optional)",
+            "fr": "Titre (facultatif)",
+            "de": "Titel (optional)",
+            "es": "Título (opcional)"
+          }
+        },
+        {
+          "key": "list",
+          "type": "string",
+          "required": false,
+          "label": {
+            "en": "List (optional)",
+            "fr": "Liste (facultatif)",
+            "de": "Liste (optional)",
+            "es": "Lista (opcional)"
+          },
+          "description": {
+            "en": "Name of an existing Karakeep list, e.g. Reading.",
+            "fr": "Nom d'une liste Karakeep existante, ex. À lire.",
+            "de": "Name einer vorhandenen Karakeep-Liste, z. B. Lesen.",
+            "es": "Nombre de una lista de Karakeep existente, p. ej. Leer."
+          }
+        },
+        {
+          "key": "tags",
+          "type": "string",
+          "required": false,
+          "label": {
+            "en": "Tags (optional)",
+            "fr": "Tags (facultatif)",
+            "de": "Tags (optional)",
+            "es": "Etiquetas (opcional)"
+          },
+          "placeholder": {
+            "en": "e.g. shopping, home",
+            "fr": "ex. courses, maison",
+            "de": "z. B. Einkauf, Haus",
+            "es": "p. ej. compras, casa"
+          },
+          "description": {
+            "en": "Separated by commas; missing tags are created.",
+            "fr": "Séparés par des virgules ; les tags absents sont créés.",
+            "de": "Durch Kommas getrennt; fehlende Tags werden angelegt.",
+            "es": "Separadas por comas; las etiquetas que faltan se crean."
+          }
+        },
+        {
+          "key": "favourite",
+          "type": "boolean",
+          "required": false,
+          "default": false,
+          "label": {
+            "en": "Mark as favourite",
+            "fr": "Mettre en favori",
+            "de": "Als Favorit markieren",
+            "es": "Marcar como favorito"
+          }
         }
       ],
       "outputs": [
         {
-          "key": "signalled",
+          "key": "bookmark_id",
+          "type": "string",
+          "label": {
+            "en": "Bookmark id",
+            "fr": "Identifiant du marque-page",
+            "de": "Lesezeichen-ID",
+            "es": "Id. del marcador"
+          }
+        },
+        {
+          "key": "title",
+          "type": "string",
+          "label": {
+            "en": "Title",
+            "fr": "Titre",
+            "de": "Titel",
+            "es": "Título"
+          }
+        },
+        {
+          "key": "already_saved",
           "type": "boolean",
-          "label": { "en": "Device signalled", "fr": "Appareil signalé" }
+          "label": {
+            "en": "Already saved",
+            "fr": "Déjà enregistré",
+            "de": "Schon gespeichert",
+            "es": "Ya guardado"
+          }
+        }
+      ]
+    },
+    {
+      "key": "save_note",
+      "label": {
+        "en": "Save a note in Karakeep",
+        "fr": "Enregistrer une note dans Karakeep",
+        "de": "Notiz in Karakeep speichern",
+        "es": "Guardar una nota en Karakeep"
+      },
+      "description": {
+        "en": "Saves a text note, e.g. a reminder or a message from a scene.",
+        "fr": "Enregistre une note texte, par exemple un rappel ou un message de scène.",
+        "de": "Speichert eine Textnotiz, z. B. eine Erinnerung oder eine Szenen-Nachricht.",
+        "es": "Guarda una nota de texto, p. ej. un recordatorio o un mensaje de escena."
+      },
+      "timeout_seconds": 30,
+      "fields": [
+        {
+          "key": "text",
+          "type": "string",
+          "required": true,
+          "label": {
+            "en": "Text of the note",
+            "fr": "Texte de la note",
+            "de": "Text der Notiz",
+            "es": "Texto de la nota"
+          },
+          "placeholder": {
+            "en": "e.g. Buy AA batteries",
+            "fr": "ex. Racheter des piles AA",
+            "de": "z. B. AA-Batterien kaufen",
+            "es": "p. ej. Comprar pilas AA"
+          }
+        },
+        {
+          "key": "title",
+          "type": "string",
+          "required": false,
+          "label": {
+            "en": "Title (optional)",
+            "fr": "Titre (facultatif)",
+            "de": "Titel (optional)",
+            "es": "Título (opcional)"
+          }
+        },
+        {
+          "key": "list",
+          "type": "string",
+          "required": false,
+          "label": {
+            "en": "List (optional)",
+            "fr": "Liste (facultatif)",
+            "de": "Liste (optional)",
+            "es": "Lista (opcional)"
+          },
+          "description": {
+            "en": "Name of an existing Karakeep list, e.g. Reading.",
+            "fr": "Nom d'une liste Karakeep existante, ex. À lire.",
+            "de": "Name einer vorhandenen Karakeep-Liste, z. B. Lesen.",
+            "es": "Nombre de una lista de Karakeep existente, p. ej. Leer."
+          }
+        },
+        {
+          "key": "tags",
+          "type": "string",
+          "required": false,
+          "label": {
+            "en": "Tags (optional)",
+            "fr": "Tags (facultatif)",
+            "de": "Tags (optional)",
+            "es": "Etiquetas (opcional)"
+          },
+          "placeholder": {
+            "en": "e.g. shopping, home",
+            "fr": "ex. courses, maison",
+            "de": "z. B. Einkauf, Haus",
+            "es": "p. ej. compras, casa"
+          },
+          "description": {
+            "en": "Separated by commas; missing tags are created.",
+            "fr": "Séparés par des virgules ; les tags absents sont créés.",
+            "de": "Durch Kommas getrennt; fehlende Tags werden angelegt.",
+            "es": "Separadas por comas; las etiquetas que faltan se crean."
+          }
+        },
+        {
+          "key": "favourite",
+          "type": "boolean",
+          "required": false,
+          "default": false,
+          "label": {
+            "en": "Mark as favourite",
+            "fr": "Mettre en favori",
+            "de": "Als Favorit markieren",
+            "es": "Marcar como favorito"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "key": "bookmark_id",
+          "type": "string",
+          "label": {
+            "en": "Bookmark id",
+            "fr": "Identifiant du marque-page",
+            "de": "Lesezeichen-ID",
+            "es": "Id. del marcador"
+          }
+        },
+        {
+          "key": "title",
+          "type": "string",
+          "label": {
+            "en": "Title",
+            "fr": "Titre",
+            "de": "Titel",
+            "es": "Título"
+          }
         }
       ]
     }
   ],
   "widgets": [
     {
-      "key": "demo_status",
-      "label": { "en": "Demo status", "fr": "État de la démo" },
-      "description": {
-        "en": "Live temperature and plug power, plug connection and observed location.",
-        "fr": "Température et puissance en direct, connexion de la prise, position observée."
+      "key": "bookmarks",
+      "label": {
+        "en": "Karakeep",
+        "fr": "Karakeep",
+        "de": "Karakeep",
+        "es": "Karakeep"
       },
-      "icon": "activity",
-      "action_timeout_seconds": 15
+      "description": {
+        "en": "Counters, the newest bookmarks and a button to save a link or a note.",
+        "fr": "Compteurs, derniers marque-pages et un bouton pour enregistrer un lien ou une note.",
+        "de": "Zähler, neueste Lesezeichen und eine Taste, um einen Link oder eine Notiz zu speichern.",
+        "es": "Contadores, últimos marcadores y un botón para guardar un enlace o una nota."
+      },
+      "icon": "bookmark",
+      "action_timeout_seconds": 30,
+      "settings": [
+        {
+          "key": "filter",
+          "type": "select",
+          "required": false,
+          "default": "all",
+          "label": {
+            "en": "Bookmarks shown",
+            "fr": "Marque-pages affichés",
+            "de": "Angezeigte Lesezeichen",
+            "es": "Marcadores mostrados"
+          },
+          "options": [
+            {
+              "value": "all",
+              "label": {
+                "en": "Newest",
+                "fr": "Les plus récents",
+                "de": "Neueste",
+                "es": "Más recientes"
+              }
+            },
+            {
+              "value": "favourites",
+              "label": {
+                "en": "Favourites",
+                "fr": "Favoris",
+                "de": "Favoriten",
+                "es": "Favoritos"
+              }
+            },
+            {
+              "value": "unarchived",
+              "label": {
+                "en": "Not archived",
+                "fr": "Non archivés",
+                "de": "Nicht archiviert",
+                "es": "No archivados"
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }
