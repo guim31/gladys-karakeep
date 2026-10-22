@@ -1,6 +1,6 @@
 {
   "name": "gladys-karakeep",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Karakeep integration for Gladys Assistant: bookmark counters, new bookmarks, and links or notes saved from scenes.",
   "type": "module",
